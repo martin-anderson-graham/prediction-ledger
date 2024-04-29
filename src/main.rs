@@ -1,8 +1,8 @@
 use std::io;
 
+mod app;
 mod prediction;
 mod tui;
-mod app;
 
 fn main() -> io::Result<()> {
     let mut terminal = tui::init()?;
