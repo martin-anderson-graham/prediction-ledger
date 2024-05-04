@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 crossterm = "0.27.0"
 ratatui = {version = "0.26.2", features=["all-widgets"]}
+time = {version="0.3.36", features=['local-offset', 'formatting', 'macros']}

@@ -96,9 +96,11 @@ pub mod app {
                     .map(|prediction| {
                         Line::from(vec![
                             "Prediction: ".blue().bold().into(),
-                            prediction.description.clone().green().into(),
+                            prediction.get_description().green().into(),
                             " - Certainty: ".bold().yellow().into(),
-                            prediction.certainty.to_string().yellow().into(),
+                            prediction.get_certainty().yellow().into(),
+                            " - Certainty: ".bold().red().into(),
+                            prediction.get_formatted_created_date().into(),
                         ])
                     })
                     .collect::<Vec<_>>(),

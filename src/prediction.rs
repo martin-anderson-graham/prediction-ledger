@@ -1,4 +1,6 @@
 pub mod prediction {
+    use time::OffsetDateTime;
+
     #[derive(Debug)]
     pub struct PredictionParseError {
         message: String,
@@ -15,18 +17,22 @@ pub mod prediction {
     }
     impl std::error::Error for PredictionParseError {}
 
-    #[derive(Debug, Default)]
+    #[derive(Debug)]
     pub struct Prediction {
-        pub description: String,
-        pub certainty: f32,
+        description: String,
+        certainty: f32,
+        created: OffsetDateTime,
     }
 
     impl Prediction {
         pub fn new(description: &str, certainty: f32) -> Result<Self, PredictionParseError> {
+            let now = OffsetDateTime::now_local().unwrap();
+
             match Prediction::validate_certainty(certainty) {
                 true => Ok(Self {
                     description: description.to_string(),
                     certainty,
+                    created: now,
                 }),
                 false => Err(PredictionParseError::new(format!(
                     "Certainty values must be between 0 and 1 inclusive - received {}",
@@ -37,6 +43,19 @@ pub mod prediction {
 
         fn validate_certainty(certainty: f32) -> bool {
             return certainty >= 0.0 && certainty <= 1.0;
+        }
+
+        pub fn get_certainty(&self) -> String {
+            self.certainty.to_string().clone()
+        }
+
+        pub fn get_description(&self) -> String {
+            self.description.to_string().clone()
+        }
+
+        pub fn get_formatted_created_date(&self) -> String {
+            let created_format = time::macros::format_description!("[month]/[day]/[year]");
+            self.created.format(&created_format).unwrap()
         }
     }
 }
