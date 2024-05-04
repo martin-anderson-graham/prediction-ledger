@@ -99,8 +99,10 @@ pub mod app {
                             prediction.get_description().green().into(),
                             " - Certainty: ".bold().yellow().into(),
                             prediction.get_certainty().yellow().into(),
-                            " - Certainty: ".bold().red().into(),
+                            " - Created: ".bold().red().into(),
                             prediction.get_formatted_created_date().into(),
+                            " - Due: ".bold().green().into(),
+                            prediction.get_formatted_due_date().into(),
                         ])
                     })
                     .collect::<Vec<_>>(),
@@ -120,7 +122,10 @@ pub mod app {
             App {
                 exit: false,
                 mode: ScreenMode::PredictionList,
-                predictions: vec![Prediction::new("The cheese will be good", 0.4).unwrap()],
+                predictions: vec![
+                    Prediction::new("The cheese will be good", 0.4).unwrap(),
+                    Prediction::new("I will win the lotto", 0.1).unwrap(),
+                ],
             }
         }
     }

@@ -22,6 +22,7 @@ pub mod prediction {
         description: String,
         certainty: f32,
         created: OffsetDateTime,
+        due: Option<OffsetDateTime>,
     }
 
     impl Prediction {
@@ -33,6 +34,7 @@ pub mod prediction {
                     description: description.to_string(),
                     certainty,
                     created: now,
+                    due: None,
                 }),
                 false => Err(PredictionParseError::new(format!(
                     "Certainty values must be between 0 and 1 inclusive - received {}",
@@ -56,6 +58,14 @@ pub mod prediction {
         pub fn get_formatted_created_date(&self) -> String {
             let created_format = time::macros::format_description!("[month]/[day]/[year]");
             self.created.format(&created_format).unwrap()
+        }
+
+        pub fn get_formatted_due_date(&self) -> String {
+            let due_format = time::macros::format_description!("[month]/[day]/[year]");
+            match self.due {
+                Some(value) => value.format(&due_format).unwrap(),
+                None => "None".to_string(),
+            }
         }
     }
 }
