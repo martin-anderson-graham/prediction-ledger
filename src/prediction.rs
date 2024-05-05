@@ -1,4 +1,8 @@
 pub mod prediction {
+    use crate::components::Component;
+    use ratatui::prelude::*;
+    use ratatui::text::Line;
+    use ratatui::widgets::{Block, Borders, Clear, Paragraph};
     use time::OffsetDateTime;
 
     #[derive(Debug)]
@@ -66,6 +70,22 @@ pub mod prediction {
                 Some(value) => value.format(&due_format).unwrap(),
                 None => "None".to_string(),
             }
+        }
+    }
+    impl Component for Prediction {
+        fn draw(&mut self, f: &mut Frame<'_>, area: Rect) -> color_eyre::eyre::Result<()> {
+            let prediction_text = Text::from(Line::from(vec![
+                "Prediction: ".blue().bold().into(),
+                self.get_description().green().into(),
+                " - Certainty: ".bold().yellow().into(),
+                self.get_certainty().yellow().into(),
+                " - Created: ".bold().red().into(),
+                self.get_formatted_created_date().into(),
+                " - Due: ".bold().green().into(),
+                self.get_formatted_due_date().into(),
+            ]));
+            f.render_widget(Paragraph::new(prediction_text).centered(), area);
+            Ok(())
         }
     }
 }
