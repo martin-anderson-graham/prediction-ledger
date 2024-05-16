@@ -84,7 +84,12 @@ pub mod prediction {
                 " - Due: ".bold().green().into(),
                 self.get_formatted_due_date().into(),
             ]));
-            f.render_widget(Paragraph::new(prediction_text).centered(), area);
+            f.render_widget(
+                Paragraph::new(prediction_text)
+                    .centered()
+                    .block(Block::default().borders(Borders::ALL)),
+                area,
+            );
             Ok(())
         }
     }

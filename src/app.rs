@@ -33,9 +33,14 @@ pub mod app {
         pub fn run(&mut self, terminal: &mut tui::Tui) -> color_eyre::eyre::Result<()> {
             while !self.exit {
                 terminal.draw(|frame| {
-                    for component in self.components.iter_mut() {
-                        let _ = component.draw(frame, frame.size());
-                    }
+                    let area = frame.size();
+                    let layout = Layout::horizontal([
+                        Constraint::Percentage(50),
+                        Constraint::Percentage(50),
+                    ]);
+                    let [left, right] = layout.areas(area);
+                    let _ = self.predictions[0].draw(frame, left);
+                    let _ = self.predictions[1].draw(frame, right);
                 })?;
                 self.handle_events()?;
             }
