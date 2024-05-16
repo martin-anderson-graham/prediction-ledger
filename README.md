@@ -15,3 +15,10 @@ TODO:
 - [ ] graph of prediction results
 - [ ] group predictions
 - [ ] filter predictions
+
+
+Long term goals:
+- [ ] sqlite storage
+- [ ] write seperate backend with db/api
+- [ ] run client over ssh (terminal.shop)
+- [ ] browser with leptos
