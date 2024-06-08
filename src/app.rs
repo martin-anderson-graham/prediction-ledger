@@ -1,6 +1,8 @@
 pub mod app {
-    use crate::components::column;
+    use crate::components::prediction_details::PredictionDetails;
+    use crate::components::prediction_list::PredictionList;
     use crate::components::Component;
+    use crate::components::{column, graph::Graph};
     use crate::prediction::prediction::Prediction;
     use crate::tui;
     use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
@@ -31,16 +33,26 @@ pub mod app {
     impl App {
         /// runs the application's main loop until the user quits
         pub fn run(&mut self, terminal: &mut tui::Tui) -> color_eyre::eyre::Result<()> {
+            let mut prediction_list_component = PredictionList::new();
+            let mut graph_component = Graph::new();
+            let mut prediction_details_component = PredictionDetails::new();
+
             while !self.exit {
                 terminal.draw(|frame| {
                     let area = frame.size();
                     let layout = Layout::horizontal([
                         Constraint::Percentage(50),
                         Constraint::Percentage(50),
-                    ]);
-                    let [left, right] = layout.areas(area);
-                    let _ = self.predictions[0].draw(frame, left);
-                    let _ = self.predictions[1].draw(frame, right);
+                    ])
+                    .spacing(2);
+                    let [left_area, right_area] = layout.areas(area);
+                    let right_layout =
+                        Layout::vertical([Constraint::Percentage(50), Constraint::Percentage(50)]);
+                    let [graph_box_area, info_box_area] = right_layout.areas(right_area);
+
+                    let _ = prediction_list_component.draw(frame, left_area);
+                    let _ = graph_component.draw(frame, graph_box_area);
+                    let _ = prediction_details_component.draw(frame, info_box_area);
                 })?;
                 self.handle_events()?;
             }

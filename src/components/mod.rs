@@ -3,6 +3,9 @@ use crossterm::event::KeyEvent;
 use ratatui::{layout::Rect, Frame};
 
 pub mod column;
+pub mod graph;
+pub mod prediction_details;
+pub mod prediction_list;
 // use crate::{action::Action, event::Event, terminal::Frame};
 
 /// `Component` is a trait that represents a visual and interactive element of the user interface.
