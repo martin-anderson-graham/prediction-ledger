@@ -2,7 +2,6 @@ use color_eyre::eyre::Result;
 use crossterm::event::KeyEvent;
 use ratatui::{layout::Rect, Frame};
 
-pub mod column;
 pub mod graph;
 pub mod prediction_details;
 pub mod prediction_list;

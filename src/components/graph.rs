@@ -24,12 +24,8 @@ impl Component for Graph {
         f: &mut ratatui::prelude::Frame<'_>,
         area: ratatui::prelude::Rect,
     ) -> color_eyre::eyre::Result<()> {
-        f.render_widget(
-            Paragraph::new("Graph area")
-                .centered()
-                .block(Block::default().borders(Borders::ALL)),
-            area,
-        );
+        f.render_widget(Block::default().borders(Borders::ALL), area);
+        f.render_widget(Paragraph::new("Graph area").centered(), area);
         Ok(())
     }
 

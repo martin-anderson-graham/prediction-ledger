@@ -2,7 +2,7 @@ pub mod prediction {
     use crate::components::Component;
     use ratatui::prelude::*;
     use ratatui::text::Line;
-    use ratatui::widgets::{Block, Borders, Clear, Paragraph};
+    use ratatui::widgets::{Block, Padding, Paragraph, Wrap};
     use time::OffsetDateTime;
 
     #[derive(Debug)]
@@ -21,8 +21,9 @@ pub mod prediction {
     }
     impl std::error::Error for PredictionParseError {}
 
-    #[derive(Debug)]
+    #[derive(Debug, Clone)]
     pub struct Prediction {
+        pub title: String,
         description: String,
         certainty: f32,
         created: OffsetDateTime,
@@ -30,11 +31,16 @@ pub mod prediction {
     }
 
     impl Prediction {
-        pub fn new(description: &str, certainty: f32) -> Result<Self, PredictionParseError> {
+        pub fn new(
+            title: &str,
+            description: &str,
+            certainty: f32,
+        ) -> Result<Self, PredictionParseError> {
             let now = OffsetDateTime::now_local().unwrap();
 
             match Prediction::validate_certainty(certainty) {
                 true => Ok(Self {
+                    title: title.to_string(),
                     description: description.to_string(),
                     certainty,
                     created: now,
@@ -75,7 +81,7 @@ pub mod prediction {
     impl Component for Prediction {
         fn draw(&mut self, f: &mut Frame<'_>, area: Rect) -> color_eyre::eyre::Result<()> {
             let prediction_text = Text::from(Line::from(vec![
-                "Prediction: ".blue().bold().into(),
+                "- ".blue().bold().into(),
                 self.get_description().green().into(),
                 " - Certainty: ".bold().yellow().into(),
                 self.get_certainty().yellow().into(),
@@ -86,8 +92,8 @@ pub mod prediction {
             ]));
             f.render_widget(
                 Paragraph::new(prediction_text)
-                    .centered()
-                    .block(Block::default().borders(Borders::ALL)),
+                    .wrap(Wrap { trim: false })
+                    .block(Block::default().padding(Padding::horizontal(2))),
                 area,
             );
             Ok(())
@@ -101,13 +107,13 @@ mod prediction_tests {
 
     #[test]
     fn test_invalid_certainty_values() {
-        let negative_certainty_prediction = Prediction::new("", -0.3);
+        let negative_certainty_prediction = Prediction::new("", "", -0.3);
         assert!(negative_certainty_prediction.is_err());
 
-        let greater_than_one_certainty_prediction = Prediction::new("", 1.3);
+        let greater_than_one_certainty_prediction = Prediction::new("", "", 1.3);
         assert!(greater_than_one_certainty_prediction.is_err());
 
-        let valid_certainty_predection = Prediction::new("", 0.4);
+        let valid_certainty_predection = Prediction::new("", "", 0.4);
         assert!(valid_certainty_predection.is_ok());
     }
 }

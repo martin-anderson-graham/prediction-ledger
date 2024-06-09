@@ -24,12 +24,8 @@ impl Component for PredictionDetails {
         f: &mut ratatui::prelude::Frame<'_>,
         area: ratatui::prelude::Rect,
     ) -> color_eyre::eyre::Result<()> {
-        f.render_widget(
-            Paragraph::new("Prediction details")
-                .centered()
-                .block(Block::default().borders(Borders::ALL)),
-            area,
-        );
+        f.render_widget(Block::default().borders(Borders::ALL), area);
+        f.render_widget(Paragraph::new("Prediction details").centered(), area);
         Ok(())
     }
 

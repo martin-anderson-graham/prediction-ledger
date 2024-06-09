@@ -1,16 +1,12 @@
 pub mod app {
+    use crate::components::graph::Graph;
     use crate::components::prediction_details::PredictionDetails;
     use crate::components::prediction_list::PredictionList;
     use crate::components::Component;
-    use crate::components::{column, graph::Graph};
     use crate::prediction::prediction::Prediction;
     use crate::tui;
     use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
-    use ratatui::{
-        prelude::*,
-        symbols::border,
-        widgets::{block::*, *},
-    };
+    use ratatui::prelude::*;
     use std::io;
 
     #[derive(Debug)]
@@ -28,12 +24,11 @@ pub mod app {
         exit: bool,
         mode: ScreenMode,
         predictions: Vec<Prediction>,
-        components: Vec<Box<dyn Component>>,
     }
     impl App {
         /// runs the application's main loop until the user quits
         pub fn run(&mut self, terminal: &mut tui::Tui) -> color_eyre::eyre::Result<()> {
-            let mut prediction_list_component = PredictionList::new();
+            let mut prediction_list_component = PredictionList::new(Some(self.predictions.clone()));
             let mut graph_component = Graph::new();
             let mut prediction_details_component = PredictionDetails::new();
 
@@ -91,12 +86,9 @@ pub mod app {
                 exit: false,
                 mode: ScreenMode::PredictionList,
                 predictions: vec![
-                    Prediction::new("The cheese will be good", 0.4).unwrap(),
-                    Prediction::new("I will win the lotto", 0.1).unwrap(),
+                    Prediction::new("Culinary prediction", "The cheese will be good", 0.4).unwrap(),
+                    Prediction::new("Economic prediction", "I will win the lotto", 0.1).unwrap(),
                 ],
-                components: vec![Box::new(
-                    Prediction::new("The cheese will be good", 0.4).unwrap(),
-                )],
             }
         }
     }
