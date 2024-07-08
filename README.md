@@ -3,8 +3,10 @@
 Built using [ratatui](https://github.com/ratatui-org/ratatui)
 
 TODO: 
-- [ ] display dummy predictions as a list
-    - [ ] keyboard shortcuts
+- [ ] display predictions and details
+    - [ ] keyboard shortcuts in main window to highlight
+    - [ ] show highlighed prediction details
+        - [ ] use non-fixed contraints/truncate as needed
 - [ ] write predictions to disk
 - [ ] popup component
 - [ ] create new predictions

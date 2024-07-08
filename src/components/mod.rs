@@ -2,6 +2,8 @@ use color_eyre::eyre::Result;
 use crossterm::event::KeyEvent;
 use ratatui::{layout::Rect, Frame};
 
+use crate::app::app::App;
+
 pub mod graph;
 pub mod prediction_details;
 pub mod prediction_list;
@@ -52,5 +54,5 @@ pub trait Component {
     /// # Returns
     ///
     /// * `Result<()>` - An Ok result or an error.
-    fn draw(&mut self, f: &mut Frame<'_>, area: Rect) -> Result<()>;
+    fn draw(&mut self, f: &mut Frame<'_>, area: Rect, app_state: &App) -> Result<()>;
 }

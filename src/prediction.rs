@@ -1,4 +1,5 @@
 pub mod prediction {
+    use crate::app::app::App;
     use crate::components::Component;
     use ratatui::prelude::*;
     use ratatui::text::Line;
@@ -23,15 +24,17 @@ pub mod prediction {
 
     #[derive(Debug, Clone)]
     pub struct Prediction {
+        pub id: u64,
         pub title: String,
-        description: String,
-        certainty: f32,
-        created: OffsetDateTime,
-        due: Option<OffsetDateTime>,
+        pub description: String,
+        pub certainty: f32,
+        pub created: OffsetDateTime,
+        pub due: Option<OffsetDateTime>,
     }
 
     impl Prediction {
         pub fn new(
+            id: u64,
             title: &str,
             description: &str,
             certainty: f32,
@@ -40,6 +43,7 @@ pub mod prediction {
 
             match Prediction::validate_certainty(certainty) {
                 true => Ok(Self {
+                    id,
                     title: title.to_string(),
                     description: description.to_string(),
                     certainty,
@@ -79,7 +83,12 @@ pub mod prediction {
         }
     }
     impl Component for Prediction {
-        fn draw(&mut self, f: &mut Frame<'_>, area: Rect) -> color_eyre::eyre::Result<()> {
+        fn draw(
+            &mut self,
+            f: &mut Frame<'_>,
+            area: Rect,
+            _app_state: &App,
+        ) -> color_eyre::eyre::Result<()> {
             let prediction_text = Text::from(Line::from(vec![
                 "- ".blue().bold().into(),
                 self.get_description().green().into(),
@@ -107,13 +116,13 @@ mod prediction_tests {
 
     #[test]
     fn test_invalid_certainty_values() {
-        let negative_certainty_prediction = Prediction::new("", "", -0.3);
+        let negative_certainty_prediction = Prediction::new(0, "", "", -0.3);
         assert!(negative_certainty_prediction.is_err());
 
-        let greater_than_one_certainty_prediction = Prediction::new("", "", 1.3);
+        let greater_than_one_certainty_prediction = Prediction::new(1, "", "", 1.3);
         assert!(greater_than_one_certainty_prediction.is_err());
 
-        let valid_certainty_predection = Prediction::new("", "", 0.4);
+        let valid_certainty_predection = Prediction::new(2, "", "", 0.4);
         assert!(valid_certainty_predection.is_ok());
     }
 }

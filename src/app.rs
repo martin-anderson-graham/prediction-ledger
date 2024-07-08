@@ -23,14 +23,20 @@ pub mod app {
     pub struct App {
         exit: bool,
         mode: ScreenMode,
-        predictions: Vec<Prediction>,
+        pub predictions: Vec<Prediction>,
+        pub focused_prediction_id: Option<u64>,
     }
     impl App {
         /// runs the application's main loop until the user quits
         pub fn run(&mut self, terminal: &mut tui::Tui) -> color_eyre::eyre::Result<()> {
+            let focused_prediction = match self.focused_prediction_id {
+                Some(id) => self.predictions.iter().find(|p| p.id == id),
+                None => None,
+            };
+
             let mut prediction_list_component = PredictionList::new(Some(self.predictions.clone()));
             let mut graph_component = Graph::new();
-            let mut prediction_details_component = PredictionDetails::new();
+            let mut prediction_details_component = PredictionDetails::new(focused_prediction);
 
             while !self.exit {
                 terminal.draw(|frame| {
@@ -45,9 +51,9 @@ pub mod app {
                         Layout::vertical([Constraint::Percentage(50), Constraint::Percentage(50)]);
                     let [graph_box_area, info_box_area] = right_layout.areas(right_area);
 
-                    let _ = prediction_list_component.draw(frame, left_area);
-                    let _ = graph_component.draw(frame, graph_box_area);
-                    let _ = prediction_details_component.draw(frame, info_box_area);
+                    let _ = prediction_list_component.draw(frame, left_area, &self);
+                    let _ = graph_component.draw(frame, graph_box_area, &self);
+                    let _ = prediction_details_component.draw(frame, info_box_area, &self);
                 })?;
                 self.handle_events()?;
             }
@@ -82,13 +88,16 @@ pub mod app {
 
     impl Default for App {
         fn default() -> Self {
+            let dummy_predictions = vec![
+                Prediction::new(0, "Culinary prediction", "The cheese will be good", 0.4).unwrap(),
+                Prediction::new(1, "Economic prediction", "I will win the lotto", 0.1).unwrap(),
+            ];
+
             App {
                 exit: false,
                 mode: ScreenMode::PredictionList,
-                predictions: vec![
-                    Prediction::new("Culinary prediction", "The cheese will be good", 0.4).unwrap(),
-                    Prediction::new("Economic prediction", "I will win the lotto", 0.1).unwrap(),
-                ],
+                focused_prediction_id: Some(dummy_predictions.get(0).unwrap().id),
+                predictions: dummy_predictions,
             }
         }
     }

@@ -2,13 +2,16 @@ use std::io;
 
 use crossterm::event::KeyEvent;
 use ratatui::{
-    layout::{Constraint, Direction, Layout},
+    layout::{Alignment, Constraint, Direction, Layout},
     style::Stylize,
     text::{Line, Text},
-    widgets::{Block, Borders, Padding, Paragraph, Wrap},
+    widgets::{
+        block::{Position, Title},
+        Block, Borders, Padding, Paragraph, Wrap,
+    },
 };
 
-use crate::prediction::prediction::Prediction;
+use crate::{app::app::App, prediction::prediction::Prediction};
 
 use super::Component;
 
@@ -48,13 +51,29 @@ impl Component for PredictionList {
         &mut self,
         f: &mut ratatui::prelude::Frame<'_>,
         area: ratatui::prelude::Rect,
+        app_state: &App,
     ) -> color_eyre::eyre::Result<()> {
         let mut constraints: Vec<Constraint> = vec![
             // for the title
             Constraint::Length(1),
         ];
 
-        f.render_widget(Block::default().borders(Borders::ALL), area);
+        let instructions = Title::from(Line::from(vec![
+            "<j/k> Up/down".blue().into(),
+            "-".into(),
+            "<esc/q> Exit".red().into(),
+        ]));
+
+        f.render_widget(
+            Block::bordered()
+                .title(
+                    instructions
+                        .alignment(Alignment::Center)
+                        .position(Position::Bottom),
+                )
+                .borders(Borders::ALL),
+            area,
+        );
         constraints.extend(
             self.predictions
                 .iter()
@@ -71,16 +90,21 @@ impl Component for PredictionList {
         f.render_widget(Paragraph::new("Prediction list").centered(), chunks[0]);
 
         for (i, prediction) in self.predictions.iter().enumerate() {
-            let prediction_text = Text::from(Line::from(vec![format!(
-                "{}- {}",
-                i + 1,
-                prediction.title.clone()
-            )
-            .blue()
-            .bold()
-            .into()]));
+            let is_focused: bool = app_state
+                .focused_prediction_id
+                .is_some_and(|id| id == prediction.id);
+
+            let prediction_text = format!("{}- {}", i + 1, prediction.title.clone());
+
+            let predection_text_colored = match is_focused {
+                true => prediction_text.white().on_blue(),
+                false => prediction_text.blue(),
+            };
+
+            let prediction_text_formatted =
+                Text::from(Line::from(vec![predection_text_colored.bold().into()]));
             f.render_widget(
-                Paragraph::new(prediction_text)
+                Paragraph::new(prediction_text_formatted)
                     .wrap(Wrap { trim: false })
                     .block(Block::default().padding(Padding::horizontal(2))),
                 chunks[i + 1],

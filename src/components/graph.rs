@@ -3,6 +3,8 @@ use std::io;
 use crossterm::event::KeyEvent;
 use ratatui::widgets::{Block, Borders, Paragraph};
 
+use crate::app::app::App;
+
 use super::Component;
 
 #[derive(Default)]
@@ -23,6 +25,7 @@ impl Component for Graph {
         &mut self,
         f: &mut ratatui::prelude::Frame<'_>,
         area: ratatui::prelude::Rect,
+        _app_state: &App,
     ) -> color_eyre::eyre::Result<()> {
         f.render_widget(Block::default().borders(Borders::ALL), area);
         f.render_widget(Paragraph::new("Graph area").centered(), area);
