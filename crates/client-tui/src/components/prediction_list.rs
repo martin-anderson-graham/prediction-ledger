@@ -6,12 +6,14 @@ use ratatui::{
     style::Stylize,
     text::{Line, Text},
     widgets::{
-        block::{Position, Title},
         Block, Borders, Padding, Paragraph, Wrap,
+        block::{Position, Title},
     },
 };
 
-use crate::{app::app::App, prediction::prediction::Prediction};
+use prediction_ledger_core::Prediction;
+
+use crate::app::app::App;
 
 use super::Component;
 

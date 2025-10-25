@@ -9,7 +9,9 @@ use ratatui::{
 };
 use time::format_description;
 
-use crate::{app::app::App, prediction::prediction::Prediction};
+use prediction_ledger_core::Prediction;
+
+use crate::app::app::App;
 
 use super::Component;
 
