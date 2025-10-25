@@ -1,12 +1,10 @@
-[package]
-name = "prediction-ledger"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+members = [ "crates/client", "crates/client-tui",
+  "crates/prediction-ledger-core",
+  "crates/client-tui",
+  "crates/client",
+]
+resolver = "2"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
-color-eyre = "0.6.3"
-crossterm = "0.27.0"
-ratatui = {version = "0.26.2", features=["all-widgets"]}
+[workspace.dependencies]
 time = {version="0.3.36", features=['local-offset', 'formatting', 'macros']}

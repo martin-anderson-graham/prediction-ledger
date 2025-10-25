@@ -1,11 +1,11 @@
 pub mod app {
+    use crate::components::Component;
     use crate::components::graph::Graph;
     use crate::components::prediction_details::PredictionDetails;
     use crate::components::prediction_list::PredictionList;
-    use crate::components::Component;
-    use crate::prediction::prediction::Prediction;
     use crate::tui;
     use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
+    use prediction_ledger_core::Prediction;
     use ratatui::prelude::*;
     use std::io;
 

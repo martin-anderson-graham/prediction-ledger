@@ -1,0 +1,7 @@
+[package]
+name = "prediction-ledger-core"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+time={workspace=true}
